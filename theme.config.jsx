@@ -7,29 +7,21 @@ export default {
       const { asPath, defaultLocale, locale } = useRouter()
       const { frontMatter } = useConfig()
       const url =
-        'https://my-app.com' +
+        'https://starblast.io' +
         (defaultLocale === locale ? asPath : `/${locale}${asPath}`)
   
       return (
         <>
           <meta property="og:url" content={url} />
-          <meta property="og:title" content={frontMatter.title || 'Nextra'} />
+          <meta property="og:title" content={frontMatter.title || 'Starblast Documentation'} />
           <meta
             property="og:description"
-            content={frontMatter.description || 'The next site builder'}
+            content={frontMatter.description || 'Starblast documentation with React/Next.js'}
           />
           <meta property="og:image" content={`https://starblast.io/static/img/icon64.png`} />
         </>
       )
     },
-    banner: {
-      key: 'sesapi-release',
-      content: (
-        <a href="https://w0lfan.github.io/SesAPI/" target="_blank">
-          🎉 SesAPI is released. Try it out!
-        </a>
-      )
-    },  
     logo: <img src="https://starblast.io/static/img/icon64.png" alt="Logo" width="32" height="32"/>,
     project: {
       link: 'https://github.com/pmgl/starblast-modding'

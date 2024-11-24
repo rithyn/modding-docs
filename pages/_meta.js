@@ -4,6 +4,7 @@ export default {
   index: "Introduction",
   content: "Content",
   docs: "Documentation and Tutorial",
+  npm: "API Reference",
   about: {
   title: "About",
   type: "page",
