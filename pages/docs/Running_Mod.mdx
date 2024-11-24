@@ -1,0 +1,77 @@
+import { Callout } from 'nextra/components'
+
+# Running and testing a mod
+
+## Change region
+
+Once your mod code is ready, in the console, start by selecting your preferred region for modding using the command region `region <region name>`.
+For example with Europe:
+
+```sh
+> region Europe
+Region set to Europe
+> █
+```
+## Start mod
+
+Then to start running your mod, type command `start`:
+
+```sh
+> start
+Mod started
+https://starblast.io#1234@12.34.56.78:2000
+Use 'test' to open game frame for testing
+> █
+```
+
+# Test the mod
+
+As instructed by the console, you may want to open a test window to join your modded game with a Starblast client. Type `test`:
+```sh
+> test
+> █
+```
+
+ 
+<Callout type="info" emoji="ℹ️">
+**ALWAYS keep the Mod Editor Tab being active while running the mod!**
+
+This is one of the most important things you need to keep in your mind!
+
+**Why?** Because that's nuances of how browsers work.
+
+Browsers slow down all javascript in non-active tabs in order to decrease the CPU processes.
+For some mods (e.g Battle Royale), it doesn't matter like with ship tree and options only,
+but for other mods where some logic in tick function or events - it will affect them **A LOT!**
+
+Ticks start to work slower and slower...
+
+Soon everything will be lagging in game; any reactions on mod buttons, any mod logic like spawning something in tick, etc.
+And... depending on mod complexity it can **CRASH THE ENTIRE MOD** - locally, server will continue to work so game will still run but without mod logic anymore.
+So, always keep the mod editor tab online or you may have unpredictable results!
+
+Also, you need to have a stable internet connection if you don't want your mods becoming laggy.
+</Callout>
+
+## Stop the currently running mod
+
+You can stop your mod anytime by using the command `stop`. Note that this will kill the game and disconnect all connected players:
+
+```sh
+> stop
+Mod stopped
+> █
+```
+
+## Other terminal commands
+
+|   Command |               Description              |           Syntax          |
+|:----------:|:--------------------------------------:|:--------------------------:|
+|`echo`     | Print any values to the terminal; can be used in both mod code (after mod started) and terminal| `echo(<item>)` `echo("Hello, World!")`|
+|`clear`    | Clear the terminal, only available in the terminal| `clear`|
+|`help`     | Display help message inside the terminal, terminal use only| `help`|
+
+
+
+
+

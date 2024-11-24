@@ -1,0 +1,206 @@
+## Ships
+You can access the list of ships (players) through the array `game.ships`
+
+You can also find a ship with a specific id using `game.findShip(id)`, which returns an object representing the matched ship or `null` (if no ships are matching the provided id)
+### Accessible fields
+You have read access to the ship’s main fields and options:
+
+| Field | Description |
+| - | - |
+| id | A unique identifier for the ship |
+| game | Points to the global `game` object |
+| x | X coordinate |
+| y | Y coordinate |
+| vx | Velocity vector X component |
+| vy | Velocity vector Y component |
+| r | Rotation angle of the ship (in radian) |
+| name | player's name |
+| alive | Whether the ship is alive or destroyed |
+| type | Ship type code (e.g. 101) |
+| stats | Ship current stats upgrades, compiled into a single integer. For example: 10012301 means the 8 stats upgrade levels are 1,0,0,1,2,3,0 and 1 |
+| idle | tells if the ship is in idle status or not |
+| team | the id of the team this ship is in |
+| score | player's score |
+| shield | current shield value |
+| generator | current generator value |
+| crystals | current crystals value |
+| healing | whether the ship's lasers are in healing mode or not |
+
+### Configuration
+You can set different options on the ships. For example:
+```js
+> game.ships[0].set({x:0,y:0});
+> █
+```
+Will move the first ship in the list to the center of the map
+
+List of accepted options when using `ship.set`:
+
+| Option | Description | Server response error message (if improper) |
+| - | - | - |
+| x | X coordinate | Wrong coordinate |
+| y | Y coordinate | Wrong coordinate |
+| vx | Velocity vector X component | Wrong coordinate |
+| vy | Velocity vector Y component | Wrong coordinate |
+| invulnerable | Use to set the ship invulnerable for X ticks (e.g. 60 for one second invulnerability) | Wrong invulnerable time |
+| type | changes the type of ship (use the ship code, e.g. `{type:403}` ) | None |
+| angle | changes the direction the ship is facing | Wrong angle |
+| score | sets player's score | Wrong score |
+| idle | set to true to force the ship to stay idle (and false to revert) | None |
+| shield | sets the value of the shield | Wrong shield value |
+| generator | sets the value of the generator | Wrong generator value |
+| healing | sets ship's lasers mode to healing (true or false) | None |
+| crystals | sets ship's crystal amount | Wrong crystals |
+| stats | set the stats upgrades of the ship | None |
+| kill | Set `kill: (any "truthy" value, e.g: true)` to destroy the ship | No violation |
+| team | Changes the team this ship belongs to (in range [0-X] where X is teams - 1) | None |
+| collider | Change the ship's collider (the ship can interact with other objects in-game or not), must be `true` or `false` | None |
+| hue | Sets the colour of the ship (range [0-359])![Hue map](https://i.sstatic.net/YOBFy.png) | None |
+
+### Intermission
+You can send the ship to intermission (a screen with results, offering to respawn). This screen allows you to display custom results information:
+```js
+> game.ships[0].intermission({"Best Achievement":"Managed to run the mod","Score":1234});
+> █
+```
+#### Triggering and Customizing player's GameOver screen
+You can also trigger the gameover screen for any given ship. Here again, you can pass results information to pass on to the player:
+```js
+> game.ships[0].gameover({"Rating":"Can do better","Score":1234});
+> █
+```
+### Instructor
+#### Calling instructor
+You can have the flight instructor send instructions to the player. For this find the player's ship and use:
+```js
+> ship.instructorSays("Hello!")
+> █
+```
+You can hide the instructor window using:
+```js
+> ship.hideInstructor()
+> █
+```
+You can later show it again using:
+```js
+> ship.showInstructor()
+> █
+```
+A second, optional parameter allows you to choose which one of the instructor characters will talk to the player. Example:
+```js
+> ship.instructorSays("Here is your report, Commander","Maria")
+> █
+```
+#### Available characters
+|Lucina|Klaus|Maria|Kan|Zoltar|
+|-|-|-|-|-|
+|![Lucina](https://starblast.data.neuronality.com/img/tutorial-survival.png)|![Klaus](https://starblast.data.neuronality.com/img/tutorial-battleroyale.png)|![Maria](https://starblast.data.neuronality.com/img/tutorial-team.png)|![Kan](https://starblast.data.neuronality.com/img/tutorial-invasion.png)|![Zoltar](https://starblast.data.neuronality.com/img/tutorial-deathmatch.png)|
+
+### Custom UI components
+#### General
+The mod can create custom UI components that will show up on the player’s screen. This is done by calling `setUIComponent` on the ship - passing in a component descriptor.
+
+For example:
+```js
+> ship.setUIComponent({
+    id:"myid",
+    position:[0,0,25,25],
+    clickable: true,
+    shortcut: "X",
+    visible: true,
+    components: [
+      { type:"box",position:[0,0,100,100],fill:"#456",stroke:"#CDE",width:2},
+      { type: "text",position: [0,0,100,50],color: "#FFF",value: "My Text"},
+      { type: "player",id: 1, position: [0,0,50,50],color: "#FFF"},
+    ]
+  })
+> █
+```
+Here is the list of UIComponent's accepted options:
+
+| Option | Description | Default value (if omitted) |
+| - | - | - |
+| id | a unique identifier for this component, mandatory | None (component won't be set)|
+| position | expressed in percentage of the main screen, the position of the component [x,y,width,height]. Example: `[45,45,10,10]` creates a component in the center of the screen, in which width and height are 10% of the screen width and height. | Client-based positions (`"radar_background"` and `"scoreboard"` id, see [this section](./Ship#customizing-the-scoreboard-or-radar)) `[0,0,100,100]` (others) |
+| visible | Whether the component is visible or not. Resend the same data with visible set to false to hide the component | true |
+| clickable | Whether this component can be clicked or not | false |
+| shortcut | When the component is clickable, a keyboard shortcut allowing to trigger the click event | None (no shortcuts) |
+| components | gives a list (array) of graphical features to render within the component, which will be described below | Empty array (`[]`) |
+
+#### Subcomponents' accepted options
+| Option | Description | Default value (if omitted) |
+| - | - | - |
+| type | type of the subcomponent currently supported: "round", "text", "box" or "player" | None (subcomponent won't be rendered) |
+| id ("player" type only) | id of the player associated with the subcomponent, which will be disapleyd as their name and badge (if exists) in the rendered subcomponent | None (blank player info) |
+| position | positions of the subcomponent, formatted as `[x,y,width,height]` that subcomponent are meant within the main component coordinates | None (subcomponent won't be rendered) |
+| value ("text" type only) | value of the text subcomponent, e.g `value:"Sample text"` | Empty string (`""`) |
+| color | text color of the subcomponent, this can be a string with any color formats (hex, hsla, rgb, etc.), e.g `"#fff"` | [Black](https://convertingcolors.com/hex-color-000000.html) (with opacity 1) |
+| fill | background color of the subcomponent, same format as the `color` property | [Black](https://convertingcolors.com/hex-color-000000.html) (with opacity 0) |
+| width | width of the subcomponent's border One unit of this value equals (1 / ([End user screen's pixel density](https://en.wikipedia.org/wiki/Pixel_density))) [CSS](https://en.wikipedia.org/wiki/CSS) pixels (px) | 0 |
+| stroke | border color of the subcomponent, same format as the `color` property | [Black](https://convertingcolors.com/hex-color-000000.html) (with opacity 0) |
+| align | alignment of the texts inside the subcomponent "left", "right" or "center" only | `"center"` |
+
+#### Combining with events
+The example below creates a warp button for every player, which can be clicked and results in the ship warping to another random location, adding 3 seconds invulnerability to it:
+
+Full example: https://github.com/pmgl/starblast-modding/blob/master/examples/warp_button.js
+```js copy
+var warp_button = {
+  id: "warp",
+  position: [2,50,8,14],
+  clickable: true,
+  shortcut: "W",
+  visible: true,
+  components: [
+    { type:"round",position:[0,0,100,100],fill:"#456",stroke:"#CDE",width:2},
+    { type: "text",position:[10,35,80,30],value:"WARP",color:"#CDE"},
+    { type: "text",position:[20,70,60,20],value:"[W]",color:"#CDE"}
+    ]
+};
+
+var warpShip = function(ship) {
+  x = (Math.random()-.5) * ship.game.options.map_size*10 ;
+  y = (Math.random()-.5) * ship.game.options.map_size*10 ;
+  ship.set({x:x,y:y,vx:0,vy:0,invulnerable:180}) ;
+} ;
+
+this.tick = function(game) {
+  if (game.step%60==0) // ensure this is done only once per second
+  {
+    for (var i=0;i<game.ships.length;i++)
+    {
+      var ship = game.ships[i] ;
+      if (!ship.custom.warp_button_installed)
+      {
+        ship.custom.warp_button_installed = true;
+        ship.setUIComponent(warp_button);
+      }
+    }
+  }
+} ;
+
+this.event = function(event,game) {
+  switch (event.name)
+  {
+    case "ui_component_clicked":
+      var ship = event.ship ;
+      var component = event.id ;
+      if (component == "warp") // check that this is our component "warp"
+      {
+        warpShip(ship);
+      }
+      break ;
+  }
+} ;
+```
+
+#### Customizing the scoreboard or radar
+The built-in scoreboard or radar can be replaced by your own custom scoreboard/radar component. As soon as an UI component with id `"scoreboard"` or `"radar_background"` is created, you will be responsible for updating the scoreboard/radar. Your custom scoreboard/radar component does not have to include a `position` because it will automatically fill the area already reserved for the perspective UI Component.
+
+#### Global UI
+You can use `game.setUIComponent({ options }){:js}` to set the UI to all current players in the game
+
+### Other methods and instances
+#### Remove all ship's secondary slots
+Syntax: `ship.emptyWeapons(){:js}`
+

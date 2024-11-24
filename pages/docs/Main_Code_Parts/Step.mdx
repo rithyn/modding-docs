@@ -1,0 +1,21 @@
+## Game step
+### Definition
+Can be accessible through `game.step`; an integer presenting the game's duration
+### Unit
+The unit of this value is tick, where 1 tick = 1/60 seconds
+
+Which means that 60 ticks = 1 second, 120 ticks = 2 seconds and so on.
+### Uses
+This code uses to set the first ship in the list to the center of the map in the first minute of the mod and reset its crystals every 5 seconds (assume that there is one ship staying from the start of the mod):
+```js copy
+this.tick = function (game)
+{
+  if (game.step == 3600) { // 1 minute = 60 seconds * 60
+    game.ships[0].set({x:0,y:0}); // Center teleport
+  }
+  if (game.step % 300 === 0) { // 5 seconds * 60
+    game.ships[0].set({crystals: 0}); // Reset crystals
+  }
+}
+```
+

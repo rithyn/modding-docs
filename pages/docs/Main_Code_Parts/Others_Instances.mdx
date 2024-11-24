@@ -1,0 +1,10 @@
+## Other game instances and methods
+#### Set custom maps in-game
+You can use `game.setCustomMap(<map pattern>){:js}` to set custom map while the game is running
+
+where `<map pattern>{:js}` has the same format as [the custom map in `this.options{:js}`](./Map)
+
+### Lock/unlock the mod from attracting new players
+Use `game.setOpen(true/false){:js}` to lock/unlock the mod to be visible to players (only for [Modding Space](https://starblast.fandom.com/wiki/Modding_Space) mods)
+
+There is also game boolean properties `game.is_open` is used to determine if the mod is open or not.

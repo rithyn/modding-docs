@@ -1,0 +1,39 @@
+## Ticking
+
+### Definition
+
+Found in `this.tick{:js}` is a JavaScript function that is called 60 times per second. In this function’s body, you will be able to code specific actions that your mod needs to take automagically while the game is running. This function can be modified while the modded game is running and the changes will apply automagically.
+
+### Events
+
+
+#### General
+
+Your mod can receive events through the function  `this.event{:js}`:
+
+```js copy
+this.event = function(event,game) {
+  switch (event.name)
+  {
+    case "ship_spawned":
+      if (event.ship != null)
+      {
+        shipJustSpawned(event.ship) ;
+      }
+      break ;
+  }
+} ;
+```
+####  Available events
+| Event name | Description | Additional event fields |
+| - | - | - |
+| ship_spawned* | A ship just spawned in game or respawned | event.ship |
+| ship_destroyed | A ship was just destroyed | event.ship, event.killer |
+| alien_destroyed | An alien was just killed | event.alien, event.killer |
+| asteroid_destroyed | A movable asteroid was just destroyed (this event won't trigger for non-movable asteroids) | event.asteroid, event.killer |
+| collectible_picked | A ship just picked a collectible item | event.collectible, event.ship |
+| ui_component_clicked | A ship just clicked a (clickable) UI component on their screen | event.ship, event.id |
+
+**Note:** * means that this event only works with unspecified `root_mode` (`root_mode: ""`)
+
+

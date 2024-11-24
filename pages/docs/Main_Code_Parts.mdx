@@ -1,0 +1,197 @@
+# Main Code Parts
+
+## Options
+
+### Definition
+
+Stored in `this.options{:js}` is a data structure where you can set options for your custom modded game. These options are used for initializing the game when you start your mod. Changing them while the mod is running does not affect the game.
+
+### Custom ships and custom tree
+
+You can import ships made within the Starblast Ship Editor. Use "Mod Export" feature to export a JavaScript code snippet for the modding interface. Then paste this snipped in the coding window and add this:
+
+```js copy
+var myship_101 = "{ … … <this is your exported ship code> …";
+
+var ships = [myship_101]; // add your ship to an array of ship
+
+this.options = {
+  root_mode: "survival",
+  ships: ships,         // specifying a list of ships to complement / replace existing ships
+  reset_tree: true,     // set to true if you want to remove the original ship tree, false if you just want to replace some of the ships
+  map_size: 30
+};
+
+this.tick = function(game) {
+};
+```
+Then run your mod. If your ship is set to level=1 model=1, your ship will replace the Fly. You can replace other ships in the tree in a similar way, using `reset_tree: false{:js}`. Or you can remove the original ship tree completely and provide a whole new one using `reset_tree: true{:js}`.
+
+### Customizing the emote-chat system
+
+The vocabulary used for the emote-chat system can be customized by setting the field `vocabulary` in the game option as follows:
+
+```js copy
+var vocabulary = [
+  { text: "Hello", icon: "\u0045", key: "O" },
+  { text: "Bye", icon: "\u0046", key: "B" },
+  { text: "Yes", icon: "\u004c", key: "Y" },
+  { text: "No", icon: "\u004d", key: "N" },
+
+  { text: "Flower", icon: "\u{1F33B}", key: "F" },
+  { text: "Snowman", icon: "\u26c4", key: "M" },
+  { text: "Shark", icon: "\u{1F988}", key: "S" },
+  { text: "Ghost", icon: "\u{1F47B}", key: "G" }
+];
+
+this.options = {
+  vocabulary: vocabulary,
+  // ...
+};
+```
+This allows using Starblast built-in emote icons, which are listed here for reference: https://starblast.io/glyphs.html
+
+You can also use unicode icons, here is a good source for reference: https://unicode.org/emoji/charts/full-emoji-list.html
+
+Note that wide unicode characters (using more than 2 bytes) requires a specific Javascript syntax as shown in the example above (example: `\u{1F47B}`)
+
+### Custom asteroids maps
+
+You can create a custom map of asteroids. This allows creating a maze for example. The custom map you provide is actually a JavaScript character string that is used to "paint" the map.
+
+For example:
+
+```js copy
+var map =
+"999999999999999999999999999999\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"99                          99\n"+
+"999999999999999999999999999999" ;
+
+
+this.options = {
+  custom_map: map,
+  map_size: 30
+}
+```
+In the example above, 9 sets the biggest size of the asteroid. You can use smaller values for adding smaller asteroids to the grid. Any value other than a digit will be interpreted as no asteroid. If your `map_size` is set to 30, make sure to create 30 lines and 30 columns, or you may get unpredictable results.
+
+Note: Use `""` for blank custom map
+
+You can use [Online Map Editor](https://bhpsngum.github.io/starblast/mapeditor/) (a community tool) to create, edit and export maps.
+
+### Other common options
+
+Most of the options are inherited from the usual custom games. A few more options have been added, specifically for modding (top of the list):
+
+| Option                 | Expected data type       | Description                                                                                                                                                       | Default value (if omitted)                                                                                              |
+|------------------------|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|
+| `root_mode`           | string                   | The mode to inherit from: "survival", "team", "invasion", "deathmatch", "battleroyale" or unspecified (other values)                                             | unspecified                                                                                                             |
+| `reset_tree`          | boolean                  | Set to true to remove the original ship tree                                                                                                                     | false                                                                                                                   |
+| `ships`               | array\<string\>            | An array of ships to add to the tree                                                                                                                             | None                                                                                                                    |
+| `map_size`            | integer                  | Size of the map, range from 20 to 200, even value only                                                                                                           | 100 (survival), 80 (team and Battle Royale), 60 (unspecified), 30 (Invasion), 20 (deathmatch)                           |
+| `soundtrack`          | string                   | "procedurality.mp3", "argon.mp3", "crystals.mp3", "red_mist.mp3", "civilisation.mp3", "warp_drive.mp3" or none (other values)                                    | "crystals.mp3" (invasion and Battle Royale), "argon.mp3" (deathmatch), "procedurality.mp3" (others)                     |
+| `max_players`         | integer                  | Players limit of the game, from 1 to 240                                                                                                                         | 70 (team), 60 (survival), 40 (unspecified), 30 (Battle Royale), 20 (deathmatch), 6 (invasion)                           |
+| `crystal_value`       | float                    | Crystal multiplier applied to crystals dropping from destroyed asteroids, from 0 to 10                                                                           | 2 (team), 0 (deathmatch and Battle Royale), 1 (others)                                                                  |
+| `lives`               | integer                  | Number of lives, from 1 to 5                                                                                                                                     | 4 (team), 1 (deathmatch and Battle Royale), 3 (others)                                                                  |
+| `maxtierlives`        | integer                  | Number of lives (from 1 to 5) when player reaches ships with the highest level (defined in `max_level` option)                                                   | 0 (team and deathmatch), 1 (Battle Royale), 3 (others)                                                                  |
+| `max_level`           | integer                  | Max level you can reach, from 1 to 7                                                                                                                             | 7                                                                                                                       |
+| `friendly_colors`     | integer                  | Serves to define teams; how many teams (or 0, maximum 5)                                                                                                         | 3 (team), 1 (invasion), 0 (others)                                                                                      |
+| `map_name`            | string                   | Name of the map                                                                                                                                                  | Auto-generated name                                                                                                     |
+| `survival_level`      | integer                  | Level which triggers survival mode (8 for no trigger, 2 minimum)                                                                                                | 7 (survival), 8 (others)                                                                                                |
+| `starting_ship`       | integer                  | Enter desired ship code: 101, 201, 404, etc.                                                                                                                     | 101                                                                                                                     |
+| `starting_ship_maxed` | boolean                  | Starting ship is maxed                                                                                                                                           | false                                                                                                                   |
+| `asteroids_strength`  | float                    | The strength of the asteroids compared to their normal states, 0 to 1000000                                                                                      | 5 (deathmatch), 0.5 (Battle Royale), 1 (others)                                                                         |
+| `friction_ratio`      | float                    | Friction ratio of the game (0 to 2)                                                                                                                              | 1                                                                                                                       |
+| `strafe`              | float                    | Strafing speed factor, from 0 to 1                                                                                                                               | 0                                                                                                                       |
+| `speed_mod`           | float                    | Speed of the mod, from 0 to 2                                                                                                                                     | 1.25 (deathmatch), 1.2 (survival and team), 1 (others)                                                                  |
+| `rcs_toggle`          | boolean                  | Enable RCS feature for ships                                                                                                                                    | true                                                                                                                    |
+| `map_id`              | integer                  | Seed (ID) of the auto-generated map, from 0 to 9999                                                                                                              | Game ID                                                                                                                 |
+| `map_density`         | float                    | Density of the map, from 0 to 2                                                                                                                                  | None                                                                                                                    |
+| `weapon_drop`         | float                    | Probability that an asteroid will drop a weapon, from 0 to 10                                                                                                    | 0                                                                                                                       |
+| `crystal_drop`        | float                    | Percentage of gems that can be collected when a ship drains gems, from 0 to 1                                                                                   | 0.5 (deathmatch), 1 (others)                                                                                            |
+| `release_crystal`     | boolean                  | Allow `[V]` to release gems                                                                                                                                      | true (team), false (others)                                                                                             |
+| `mines_self_destroy`  | boolean                  | Mines will self-destruct after a while                                                                                                                          | true                                                                                                                    |
+| `mines_destroy_delay` | integer                  | All landed mines will be destroyed after this interval if no enemies trigger them (in ticks). Minimum 0, no actual maximum limit                                | 3600 (Battle Royale), 18000 (others)                                                                                   |
+| `healing_enabled`     | boolean                  | Enable healing feature                                                                                                                                          | true (team), false (others)                                                                                             |
+| `healing_ratio`       | float                    | Healing ratio to actual laser damage, from 0 to 2                                                                                                               | 0.5 (team), 1 (others)                                                                                                  |
+| `shield_regen_factor` | float                    | Shield regeneration multiplier to natural regeneration of ships. Minimum 0, no actual maximum limit                                                             | 1                                                                                                                       |
+| `power_regen_factor`  | float                    | Power (Energy) regeneration multiplier to natural regeneration of ships. Minimum 0, no actual maximum limit                                                     | 1                                                                                                                       |
+| `invulnerable_ships`  | boolean                  | Ships are invulnerable                                                                                                                                          | false                                                                                                                   |
+| `weapons_store`       | boolean                  | Allow access to the weapon store                                                                                                                                | true                                                                                                                    |
+| `radar_zoom`          | float                    | Radar zoom ratio. Set value to 1, 2, or 4 (recommended values are powers of 2)                                                                                   | 2                                                                                                                       |
+| `auto_refill`         | boolean                  | Collecting an energy or shield pill immediately refills energy or shield. Otherwise, the collected pill is added to the active weapons                          | false                                                                                                                   |
+| `projectile_speed`    | float                    | Affects the speed of rockets, missiles, and torpedoes. Use 1 for default speed. Minimum 0, no actual maximum limit                                              | 1                                                                                                                       |
+| `choose_ship`         | array\<integer\>           | e.g., setting to `[301,302,303]` will let player choose a ship from these 3 ships before entering the game                                                      | None                                                                                                                    |
+| `collider`            | boolean                  | Enable collisions of player ships with anything                                                                                                                | true                                                                                                                    |
+
+### Survival mode specific options
+
+| Option             | Expected data type | Description                                                                                                                                                              | Default value (if omitted)                |
+|--------------------|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------|
+| `survival_time`    | float              | When to trigger survival mode (in minutes): 0 to disable survival time trigger from 1 to 600 to set the survival trigger time                                       | 60                                        |
+| `bouncing_lasers`  | float              | Must be a value between 0 (no bounce) or 1 (bounce retains 100% of the laser damage) **Note:** This feature is planned to be applied to all root modes in the future   | 0.9                                       |
+
+## Team mode specific options
+
+| Option                        | Expected data type | Description                                                                                                 | Default value (if omitted)           |
+|-------------------------------|--------------------|-------------------------------------------------------------------------------------------------------------|--------------------------------------|
+| `hues`                         | array\<integer\>     | Hue numbers for teams, with the same amount of elements as used for `friendly_colors`                        | Auto-generated hues                  |
+| `station_regeneration`         | float              | Factor to apply to station shield regen, from 0 to 2                                                        | 1                                    |
+| `station_size`                 | integer            | Size of the stations; integer from 1 to 5                                                                   | 2                                    |
+| `station_crystal_capacity`     | float              | Factor to apply to the station crystal capacity, from 0.1 to 10                                              | 1                                    |
+| `station_repair_threshold`     | float              | Part of the station crystal capacity that must be refilled to repair a module, from 0 to 1                  | 0.25                                 |
+| `auto_assign_teams`            | boolean            | Allow assigning players to a specific team, otherwise let them choose the team themselves                    | false                                |
+| `all_ships_can_dock`           | boolean            | Allow ships of Tier higher than base station normally lets in, to enter depots                              | false                                |
+| `all_ships_can_respawn`        | boolean            | Allow ships of Tier higher than base station normally lets in, to respawn from spawn ports, otherwise randomly on map | false                                |
+
+### Deathmatch mode specific options
+
+| Option           | Expected data type | Description                                                                                                                                                                                      | Default value (if omitted)                                                                                                                                                                                                 |
+|------------------|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ship_groups`    | array\<string\>      | An array containing some arrays, each of them representing one ship group (by name) available for selection. See the example below. The longer the array is, the lower chance for each ship group being available in a single match | See [[Deathmatch]] for a list of default ship groups. The mod won't run if `reset_tree` option is set to `true` without manually specifying the ship groups. **Please note** that the ship groups will be automatically set to only U-Sniper if `map_name` is set to "Battle of Titans". Please [[Easter Eggs#Battle of Titans|see here]] for more information. |
+
+Example:
+
+```js copy
+ship_groups: [
+  ["U-Sniper","Howler"],
+  ["Crusader","Pioneer"]
+]
+```
+
+
+## Ticking
+
+
+
+
+
+
+
