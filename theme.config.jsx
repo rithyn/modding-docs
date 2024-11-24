@@ -29,7 +29,7 @@ export default {
     chat: {
       link: 'https://discord.gg/85qN8F2gJf'
     },
-    docsRepositoryBase: 'https://github.com/rithyn/demo2',
+    docsRepositoryBase: 'https://github.com/rithyn/modding-docs/',
     footer: "",
     // ... other theme options
   }
