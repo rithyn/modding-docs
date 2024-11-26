@@ -1,8 +1,7 @@
-import { title } from "process";
-
 export default {
   index: "Introduction",
   content: "Content",
+  quick_start: "Quick Start",
   docs: "Documentation and Tutorial",
   npm: "API Reference",
   about: {
