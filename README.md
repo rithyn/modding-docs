@@ -34,7 +34,7 @@ Based on Nextra Tamplate, with React and Next.js
 
 
 
-Starblast Modding :
+# Starblast Modding :
 ```mermaid
 ---
 config:
