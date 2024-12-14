@@ -1,22 +1,31 @@
+import { Steps } from 'nextra/components'
+
 ## Common problems and how to fix them
 ### Black screen issue
 In most cases, you're getting a black screen after loading your mod due to a bad ship tree.
 
 Follow these rules to avoid it:
+<Steps>
+### Rule 1
+Your ship tree must have a ship with type/code 101.
 
-1. Your ship tree must have a ship with type/code 101.
-1. If your ship tree has level 2 ships, then it should have level 1 ships too.
-1. Either models should go in the right order without gaps: 1, 2, 3 etc (not 1, 6, 17) or control all ship tree routes by `next` parameter in ship codes (but keep correct order for unreachable ships).
-1. You can't have possibly infinite ship tree routes, made by `next` parameters - all routes should end at some ship, there shouldn't be able to come back to some ship again.
+### Rule 2
+If your ship tree has level 2 ships, then it should have level 1 ships too.
 
+### Rule 3
+Either models should go in the right order without gaps: 1, 2, 3 etc (not 1, 6, 17) or control all ship tree routes by `next` parameter in ship codes (but keep correct order for unreachable ships).
+
+### Rule 4
+You can't have possibly infinite ship tree routes, made by `next` parameters - all routes should end at some ship, there shouldn't be able to come back to some ship again.
+</Steps>
 ### My mod closed accidentally but the game is not stopped
 Sometimes, some unexpected problems can crash the mod, but it only disconnects from the modding side, or so-called "controller" side, the game itself will continue running without control from your modding client until it meets the closing requirements (or even in some serious occasions, game developers - like PMGL - need to close it by themselves).
 
 Here are some reasons which can lead to mod crashing:
 
-1. Closing/Reloading the modding tab/window without stopping the mod first (Most common one)
-1. Very unstable internet connection
-1. Server resolve error (which will automatically disconnect the controller by itself)
-1. Browser tab hangs/crashes (careful of infinite while/for loops)
+- Closing/Reloading the modding tab/window without stopping the mod first (Most common one)
+- Very unstable internet connection
+- Server resolve error (which will automatically disconnect the controller by itself)
+- Browser tab hangs/crashes (careful of infinite while/for loops)
 
 Also keep in mind that you can't reconnect to your previously crashed server, even if it's still running.
