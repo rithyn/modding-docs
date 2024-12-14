@@ -1,5 +1,4 @@
 # Modding Documentation
-
 ```mermaid
 ---
 config:
@@ -8,7 +7,11 @@ config:
 flowchart LR
  subgraph ModdingClient["Modding Client"]
         ModCode["Mod code"]
-        EventFunc["Event function"]
+        subgraph ModCode["Mode Code"]
+        EventFunc["Event Function (this.event)"]
+        TickingFunc["Ticking Function (this.tick)"]
+        end
+        
         TickingFunc["Ticking function"]
         ModdingEngine["Modding Engine"]
         Terminal["Terminal"]
@@ -25,14 +28,12 @@ flowchart LR
     ModdingEngine -- send events --> EventFunc
     ModdingEngine -- responses to TickingFunc --> TickingFunc
     Terminal -- responses + tick logging --> ModdingEngine
-    UserInterface -- setup --> MainEngine
-    MainEngine -- responses when something changes --> UserInterface
-    ModdingClient -- "send messages set commands etc." --> WebSocketServer
-    WebSocketServer -- "responses events etc." --> ModdingClient
-    WebSocketServer -- send messages --> StarblastClient
-    StarblastClient -- "responses events etc." --> WebSocketServer
-    n1["Starblast Modding"]
-    n1@{ img: "https://raw.githubusercontent.com/rithyn/rithy-archives/refs/heads/main/logo.png", h: 180, w: 288, pos: "b"}
+    UserInterface -- responses (when something changes) --> MainEngine
+    MainEngine -- setup --> UserInterface
+    ModdingEngine -- "send messages set commands etc." --> SecretEngine
+    SecretEngine -- "responses events etc." --> ModdingEngine
+    SecretEngine -- send messages --> MainEngine
+    MainEngine -- "responses events etc." --> SecretEngine    
 ```
 
 
